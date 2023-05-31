@@ -1,5 +1,5 @@
 <template>
-	<view class="main-panel" ref="abc"> {{columnCount}} {{xipaiFlag}}
+	<view class="main-panel" ref="abc">
 		<template v-if='cards' v-for="(layer,layerIdx) in cards">
 			<template v-for="(row,rowIdx) in layer">
 				<template v-for="(card, cardIdx) in row">
@@ -11,20 +11,32 @@
 						<image v-if='card.type === 4' src="../../static/4.png"/>
 						<image v-if='card.type === 5' src="../../static/5.png"/>
 						<image v-if='card.type === 6' src="../../static/6.png"/>
+						<image v-if='card.type === 7' src="../../static/7.png"/>
+						<image v-if='card.type === 8' src="../../static/8.png"/>
+						<image v-if='card.type === 9' src="../../static/9.png"/>
 					</view>
 				</template>
 			</template>
 		</template>
 
-		<view class="xipai-btn" @click='xipaiClicked'>洗牌</view>
+		<view class="xipai-btn control-btn" @click='xipaiClicked'>
+			<view class='corner'>{{xipaiLeft}}</view>
+			<text>洗牌</text>
+		</view>
+		
+		<state-bar :time-remain="gameTime" :score="score"/>
+		
+		<div class="bar"></div>
 	</view>
 </template>
 
 
 
 <script>
-
+	import StateBar from './state-bar.vue'
+	
 	const BAR_LENGTH = 8;
+	const CARD_TYPE = 9
 
 	const createCardsData = (layerCnt, rowCnt, columnCnt, typeCnt) => {
 		let id = 1;
@@ -56,16 +68,18 @@
 
 	export default {
 		created() {
-			this.cardTypes = [
-				img0,img1,img2,img3,img4,img5,img6,img7,img8
-			]
+		},
+		components: {
+			StateBar
 		},
 		data() {
 			return {
 				cards: false,
 				xipaiFlag: false,
 				xipaiLeft: 3,
-				bar: []
+				bar: [],
+				score: 0,
+				gameTime: 50
 			}
 		},
 		computed: {
@@ -216,7 +230,7 @@
 									return cardInBar && cardInBar.id === card.id
 								})
 								if (!cardInBar && !card.destory) { // 已经加入bar，用bar中的位置, 只能变换不在bar中的card
-									card.type = Math.floor(Math.random() * that.images.length)
+									card.type = Math.floor(Math.random() * CARD_TYPE)
 								}
 
 							}
@@ -231,9 +245,16 @@
 <style>
 	.main-panel {
 		--width: 750rpx;
-		--height: 1334rpx;
-		--card-height: calc(var(--height) / 10);
-		--card-width: calc(var(--card-height) * 0.8 - 20rpx);
+		--height: 1280rpx;
+		--card-height: calc(var(--height) / 10 - 10rpx);
+		--card-width: calc(var(--card-height) * 0.7);
+		--bar-length: 8;
+		--bar-left: calc((var(--width) - var(--card-width) * var(--bar-length)) / 2);
+		overflow: hidden;
+		height: var(--height);
+		width: var(--width);
+		position: relative;
+		background: linear-gradient(190deg, hsl(250, 100%, 65%), hsl(200, 100%, 65%), hsl(100, 100%, 64%))
 	}
 
 	.card-item {
@@ -250,6 +271,19 @@
 		width: 100%;
 		height: 100%;
 	}
+	
+	.control-btn {
+	  position: absolute;
+	  font-size: calc(var(--card-width) * .3);
+	  padding: calc(var(--card-width) * .15);
+	  background: linear-gradient(#eee, white, #eee);
+	  border-radius: calc(var(--card-width) * .2);
+	  cursor: pointer;
+	  color: rgb(77, 73, 73);
+	  border: 1px solid gray;
+	  --box-shadow-size: calc(var(--card-width) * .05);
+	  box-shadow: var(--box-shadow-size) var(--box-shadow-size) var(--box-shadow-size) gray;
+	}
 
 	.xipai-btn {
 		position: absolute;
@@ -258,4 +292,40 @@
 		background: gray;
 		padding: calc(var(--card-height) * .1);
 	}
+	
+	.control-btn>.corner {
+	  display: flex;
+	  justify-content: center;
+	  align-items: center;
+	  --coner-width: calc(var(--card-width) * .4);
+	  position: absolute;
+	  right: 0;
+	  top: calc(0px - var(--coner-width) * .5);
+	  border-radius: calc(var(--coner-width) / 2);
+	  background: red;
+	  color: white;
+	  width: var(--coner-width);
+	  height: var(--coner-width);
+	}
+
+.bar {
+
+  height: var(--card-height);
+  width: calc(var(--card-width) * var(--bar-length));
+  background: lightgray;
+  position: absolute;
+  left: var(--bar-left);
+  bottom: 1%;
+  border-radius: 10rpx;
+}
+.bar:before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: white;
+  filter: blur(20rpx);
+}
 </style>
