@@ -3,7 +3,7 @@
 		<template v-if='cards' v-for="(layer,layerIdx) in cards">
 			<template v-for="(row,rowIdx) in layer">
 				<template v-for="(card, cardIdx) in row">
-					<view v-if='card && !card.destory' class="card-item" :class='{dark: card.dark}' :style="[cardStyle(card)]" ref="mainPanelRef"
+					<view v-if='card && !card.destory' class="card-item" :class='{dark: card.dark || pauseTimeStart !== 0}' :style="[cardStyle(card)]" ref="mainPanelRef"
 						@click="cardClicked(card)">
 						<image v-if='card.type === 0' src="../../static/0.png" />
 						<image v-if='card.type === 1' src="../../static/1.png" />
@@ -683,7 +683,7 @@
 <style>
 	.main-panel {
 		--width: 750rpx;
-		--height: 1280rpx;
+		--height: 1334rpx;
 		--card-height: calc(var(--height) / 10 - 10rpx);
 		--card-width: calc(var(--width) / 9);
 		--bar-length: 8;
@@ -711,7 +711,9 @@
 
 	}
 
-	.card-item.dark {}
+	.card-item.dark {
+		filter: brightness(.3);
+	}
 
 	.card-item>image {
 		width: 100%;
@@ -729,17 +731,15 @@
 		border: 1rpx solid gray;
 		--box-shadow-size: calc(var(--card-width) * .05);
 		box-shadow: var(--box-shadow-size) var(--box-shadow-size) var(--box-shadow-size) gray;
+		top: calc(var(--height) * 0.82);
 	}
 
 	.xipai-btn {
-		right: var(--card-width);
-		bottom: calc(var(--card-height) * 1.3);
-
+		right: calc(var(--card-width) * 0.5);
 	}
 
 	.zhanting {
 		right: calc(var(--card-width) * 2);
-		bottom: calc(var(--card-height) * 1.3);
 	}
 
 	.control-btn>.corner {
@@ -811,8 +811,8 @@
 	.water-mark {
 		user-select: all;
 		position: absolute;
-		right: calc(var(--width) * .01);
-		bottom: 1%;
+		right: calc(var(--width) * .1);
+		bottom: 1.5%;
 		z-index: var(--water-mark-z);
 		color: gray;
 	}
