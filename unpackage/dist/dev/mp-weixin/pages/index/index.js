@@ -137,6 +137,11 @@ var render = function () {
       s1: s1,
     }
   })
+  if (!_vm._isMounted) {
+    _vm.e0 = function ($event) {
+      _vm.audioOn = !_vm.audioOn
+    }
+  }
   _vm.$mp.data = Object.assign(
     {},
     {
@@ -245,29 +250,6 @@ var _default = {
       }
     };
   },
-  watch: {
-    audioOn: function audioOn(value) {
-      if (value) {
-        this.$refs.audioBgmRef.play();
-      } else {
-        this.$refs.audioBgmRef.pause();
-      }
-    },
-    timeRemain: function timeRemain(remain) {
-      if (this.show.welcome || this.show.gameover) {
-        return false;
-      }
-      if (remain === 6) {
-        // this.$refs.audioBgmRef.pause()
-      }
-      if (remain === 5 || remain === 4 || remain === 3 || remain === 2 || remain === 1) {
-        // this.audioOn && this.$refs.audioDuRef.play();
-      }
-      if (remain <= 0) {
-        this.gameover();
-      }
-    }
-  },
   computed: {
     timeRemain: function timeRemain() {
       var gameStartTime = this.gameStartTime,
@@ -358,6 +340,29 @@ var _default = {
       return (width - cardWidth * BAR_LENGTH) / 2;
     }
   },
+  watch: {
+    audioOn: function audioOn(value) {
+      if (value) {
+        this.audio.bgm.play();
+      } else {
+        this.audio.bgm.pause();
+      }
+    },
+    timeRemain: function timeRemain(remain) {
+      if (this.show.welcome || this.show.gameover) {
+        return false;
+      }
+      if (remain === 6) {
+        this.audio.bgm.pause();
+      }
+      if (remain === 5 || remain === 4 || remain === 3 || remain === 2 || remain === 1) {
+        this.audioOn && this.audio.du.play();
+      }
+      if (remain <= 0) {
+        this.gameover();
+      }
+    }
+  },
   onLoad: function onLoad() {
     var that = this;
     that.timerId = setInterval(function () {
@@ -366,18 +371,20 @@ var _default = {
       }
       that.currentTime = Date.now();
     }, 100);
-    that.audio = {
-      bgm: uni.createInnerAudioContext(),
-      failed: uni.createInnerAudioContext(),
-      sua: uni.createInnerAudioContext(),
-      du: uni.createInnerAudioContext()
+    var createAudio = function createAudio(src) {
+      var loop = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+      var obj = uni.createInnerAudioContext();
+      obj.sessionCategory = 'ambient';
+      obj.src = src;
+      obj.loop = loop;
+      return obj;
     };
-    // that.audio.bgm.src = "../../static/bgm.mp3";
-    // that.audo.bgm.loop = true;
-    // that.audio.bgm.play();
-    // that.audio.failed.src = "../../static/failed.mp3";
-    // that.audio.sua.src = "../../static/sua.mp3";
-    // that.audio.du.src = "../../static/du.mp3";
+    that.audio = {
+      bgm: createAudio("../../static/bgm.mp3", true),
+      failed: createAudio("../../static/failed.mp3"),
+      sua: createAudio("../../static/sua.mp3"),
+      du: createAudio("../../static/du.mp3")
+    };
   },
   onUnload: function onUnload() {
     clearTimeout(this.timerId);
@@ -393,8 +400,9 @@ var _default = {
           if (newValue !== undefined) {
             row[colIdx] = newValue;
             this.cards = cards;
-            console.log("set matrix L[".concat(layerIdx, "] R[").concat(rowIdx, "] C[").concat(colIdx, "] to new value"), newValue);
+            // console.log(`set matrix L[${layerIdx}] R[${rowIdx}] C[${colIdx}] to new value`, newValue)
           }
+
           if (card) {
             return card;
           }
@@ -751,8 +759,8 @@ var _default = {
     },
     gameover: function gameover() {
       var that = this;
-      // that.$refs.audioBgmRef.pause()
-      // that.audioOn && that.$refs.audioFailedRef.play()
+      that.audio.bgm.pause();
+      that.audioOn && that.audio.failed.play();
       that.show.gameover = true;
     },
     startGame: function startGame() {
@@ -767,13 +775,13 @@ var _default = {
       var columnCount = that.columnCount;
       that.cards = createCardsData(2, 7, columnCount, 6);
       that.gameStartTime = Date.now();
-      that.gameTime = 1000;
+      that.gameTime = 100;
       that.pauseTime = 0;
       that.pauseTimeStart = 0;
       that.show.gameover = false;
       that.bar = [];
       that.score = 0;
-      // that.audioOn && that.$refs.audioBgmRef.play()
+      that.audioOn && that.audio.bgm.play();
     }
   }
 };
