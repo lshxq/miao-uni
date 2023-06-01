@@ -1,5 +1,5 @@
 <template>
-  <view class="state-bar-main">
+  <view class="state-bar-main" :class='{hidden}'>
     <view class="state-item">
       <view class="label">时间</view>
       <view class="time-remain">{{timeRemain}}</view>
@@ -18,14 +18,17 @@
 export default {
   props: {
     timeRemain: Number,
-    score: Number
+    score: Number,
+	hidden: Boolean
   },
 }
 </script>
 
 
 <style scoped>
-
+.hidden.state-bar-main {
+	top: 0rpx - var(--card-height);
+}
 .state-bar-main {
   padding: calc(var(--height) / 100);
   position: absolute;
@@ -37,18 +40,18 @@ export default {
   width: var(--width);
   height: var(--card-height);
   box-sizing: border-box;
+  transition: all 1s;
 }
 .state-item>.label {
   font-size: calc(var(--card-width) / 5);
   display: block;
   color: white;
 }
+
 .time-remain {
   color: white;
   font-size: calc(var(--card-width) * .7);
 }
-
-
 
 .score {
   color: white;

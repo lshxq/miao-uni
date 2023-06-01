@@ -109,7 +109,10 @@ var render = function () {
           var $orig = _vm.__get_orig(row)
           var l0 = _vm.__map(row, function (card, cardIdx) {
             var $orig = _vm.__get_orig(card)
-            var s0 = _vm.__get_style([_vm.cardStyle(card)])
+            var s0 =
+              card && !card.destory
+                ? _vm.__get_style([_vm.cardStyle(card)])
+                : null
             return {
               $orig: $orig,
               s0: s0,
@@ -126,11 +129,20 @@ var render = function () {
       l1: l1,
     }
   })
+  var l3 = _vm.__map(_vm.gameNameDisplay, function (item, idx) {
+    var $orig = _vm.__get_orig(item)
+    var s1 = _vm.__get_style([item.style])
+    return {
+      $orig: $orig,
+      s1: s1,
+    }
+  })
   _vm.$mp.data = Object.assign(
     {},
     {
       $root: {
         l2: l2,
+        l3: l3,
       },
     }
   )
@@ -167,7 +179,7 @@ __webpack_require__.r(__webpack_exports__);
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-
+/* WEBPACK VAR INJECTION */(function(uni) {
 
 Object.defineProperty(exports, "__esModule", {
   value: true
@@ -176,32 +188,13 @@ exports.default = void 0;
 function _createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it.return != null) it.return(); } finally { if (didErr) throw err; } } }; }
 function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
 function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-
+var StateBar = function StateBar() {
+  __webpack_require__.e(/*! require.ensure | pages/index/state-bar */ "pages/index/state-bar").then((function () {
+    return resolve(__webpack_require__(/*! ./state-bar.vue */ 42));
+  }).bind(null, __webpack_require__)).catch(__webpack_require__.oe);
+};
 var BAR_LENGTH = 8;
+var CARD_TYPE = 9;
 var createCardsData = function createCardsData(layerCnt, rowCnt, columnCnt, typeCnt) {
   var id = 1;
   var data = [];
@@ -227,18 +220,113 @@ var createCardsData = function createCardsData(layerCnt, rowCnt, columnCnt, type
   return data;
 };
 var _default = {
-  created: function created() {
-    this.cardTypes = [img0, img1, img2, img3, img4, img5, img6, img7, img8];
+  created: function created() {},
+  components: {
+    StateBar: StateBar
   },
   data: function data() {
     return {
+      gameName: '喵了个咪',
+      gameStartTime: 0,
+      pauseTimeStart: 0,
+      pauseTime: 0,
+      gameTime: 0,
+      currentTime: 0,
       cards: false,
+      bar: [],
+      score: 0,
+      audioOn: true,
       xipaiFlag: false,
       xipaiLeft: 3,
-      bar: []
+      pauseLeft: 3,
+      show: {
+        welcome: true,
+        gameover: false
+      }
     };
   },
+  watch: {
+    audioOn: function audioOn(value) {
+      if (value) {
+        this.$refs.audioBgmRef.play();
+      } else {
+        this.$refs.audioBgmRef.pause();
+      }
+    },
+    timeRemain: function timeRemain(remain) {
+      if (this.show.welcome || this.show.gameover) {
+        return false;
+      }
+      if (remain === 6) {
+        // this.$refs.audioBgmRef.pause()
+      }
+      if (remain === 5 || remain === 4 || remain === 3 || remain === 2 || remain === 1) {
+        // this.audioOn && this.$refs.audioDuRef.play();
+      }
+      if (remain <= 0) {
+        this.gameover();
+      }
+    }
+  },
   computed: {
+    timeRemain: function timeRemain() {
+      var gameStartTime = this.gameStartTime,
+        currentTime = this.currentTime,
+        pauseTime = this.pauseTime,
+        pauseTimeStart = this.pauseTimeStart,
+        gameTime = this.gameTime;
+      var rv = 0;
+      if (pauseTimeStart === 0) {
+        // 当前没有暂停
+        rv = gameTime - (currentTime - gameStartTime) / 1000 + pauseTime;
+      } else {
+        rv = gameTime - (pauseTimeStart - gameStartTime) / 1000 + pauseTime;
+      }
+      return Math.floor(rv);
+    },
+    gameNameDisplay: function gameNameDisplay() {
+      var gameName = this.gameName,
+        height = this.height,
+        width = this.width;
+      var arr = [];
+      var fs = Math.min(width, height) / gameName.length;
+      var offsetX = width / (gameName.length + 1);
+      var centerX = width / 2;
+      var centerY = height / 2;
+      var radius = Math.min(width, height) / 2;
+      var deg = 60;
+      for (var idx = 0; idx < gameName.length; idx++) {
+        var char = gameName.charAt(idx);
+        var left = offsetX * (idx + 1);
+        var a = centerX - left;
+        var topOffset = Math.sqrt(radius * radius - a * a);
+        var top = centerY - topOffset;
+        var rot = deg / (gameName.length - 1) * idx - deg / 2;
+        arr.push({
+          char: char,
+          style: {
+            left: "".concat(left, "rpx"),
+            top: "".concat(top, "rpx"),
+            transform: "rotate(".concat(rot, "deg) translateX(-50%)"),
+            'font-size': "".concat(fs, "rpx")
+          }
+        });
+      }
+      return arr;
+    },
+    mainPanelClass: function mainPanelClass() {
+      var _this$show = this.show,
+        welcome = _this$show.welcome,
+        gameover = _this$show.gameover;
+      var classes = [];
+      if (welcome) {
+        classes.push('show-welcome');
+      }
+      if (gameover) {
+        classes.push('show-game-over');
+      }
+      return classes;
+    },
     cardMarginLeft: function cardMarginLeft() {
       var cardWidth = this.cardWidth,
         columnCount = this.columnCount,
@@ -256,25 +344,287 @@ var _default = {
       return Math.floor(height / 10);
     },
     cardWidth: function cardWidth() {
-      var cardHeight = this.cardHeight;
-      return Math.floor(cardHeight * 0.8 - 10);
+      var width = this.width;
+      return Math.floor(width / 9);
     },
     columnCount: function columnCount() {
       var width = this.width,
         cardWidth = this.cardWidth;
-      return Math.floor(width / cardWidth) - 1;
+      return Math.floor(width * 0.95 / cardWidth);
+    },
+    barMarginLeft: function barMarginLeft() {
+      var width = this.width,
+        cardWidth = this.cardWidth;
+      return (width - cardWidth * BAR_LENGTH) / 2;
     }
   },
-  mounted: function mounted() {
-    var width = this.width,
-      height = this.height,
-      cardHeight = this.cardHeight,
-      cardWidth = this.cardWidth,
-      columnCount = this.columnCount;
-    this.cards = createCardsData(2, 7, columnCount, 6);
+  onLoad: function onLoad() {
+    var that = this;
+    that.timerId = setInterval(function () {
+      if (that.show.gameover || that.show.welcome) {
+        return false;
+      }
+      that.currentTime = Date.now();
+    }, 100);
+    that.audio = {
+      bgm: uni.createInnerAudioContext(),
+      failed: uni.createInnerAudioContext(),
+      sua: uni.createInnerAudioContext(),
+      du: uni.createInnerAudioContext()
+    };
+    // that.audio.bgm.src = "../../static/bgm.mp3";
+    // that.audo.bgm.loop = true;
+    // that.audio.bgm.play();
+    // that.audio.failed.src = "../../static/failed.mp3";
+    // that.audio.sua.src = "../../static/sua.mp3";
+    // that.audio.du.src = "../../static/du.mp3";
+  },
+  onUnload: function onUnload() {
+    clearTimeout(this.timerId);
   },
   methods: {
+    cardInMatrix: function cardInMatrix(layerIdx, rowIdx, colIdx, newValue) {
+      var cards = JSON.parse(JSON.stringify(this.cards));
+      var layer = cards[layerIdx];
+      if (layer) {
+        var row = layer[rowIdx];
+        if (row) {
+          var card = row[colIdx];
+          if (newValue !== undefined) {
+            row[colIdx] = newValue;
+            this.cards = cards;
+            console.log("set matrix L[".concat(layerIdx, "] R[").concat(rowIdx, "] C[").concat(colIdx, "] to new value"), newValue);
+          }
+          if (card) {
+            return card;
+          }
+        }
+      }
+      return false;
+    },
+    uncover: function uncover(card) {
+      var _this = this;
+      // 翻开底部, 奇偶错位，分别处理
+      var that = this;
+      var removed = function removed(layerIdx, rowIdx, colIdx) {
+        // 被destory  或者 在 bar中 都是从 matrix中移除 了
+        var card = _this.cardInMatrix(layerIdx, rowIdx, colIdx);
+        if (card === false) {
+          return true;
+        }
+        if (card.destory) {
+          return card;
+        }
+        var cardInBar = that.bar.find(function (cardInBar) {
+          return cardInBar.id === card.id;
+        });
+        return cardInBar;
+      };
+      if (card.layerIdx % 2 === 0) {
+        // 偶数层数据多
+        var needCheckCards = [{
+          // 上一层相邻的4张牌
+          layerIdx: card.layerIdx - 1,
+          rowIdx: card.rowIdx - 1,
+          colIdx: card.colIdx - 1
+        }, {
+          layerIdx: card.layerIdx - 1,
+          rowIdx: card.rowIdx - 1,
+          colIdx: card.colIdx
+        }, {
+          layerIdx: card.layerIdx - 1,
+          rowIdx: card.rowIdx,
+          colIdx: card.colIdx - 1
+        }, {
+          layerIdx: card.layerIdx - 1,
+          rowIdx: card.rowIdx,
+          colIdx: card.colIdx
+        }].map(function (pos) {
+          var currCard = that.cardInMatrix(pos.layerIdx, pos.rowIdx, pos.colIdx);
+          return currCard;
+        });
+        var check = function check(currCard) {
+          var c1Removed = removed(currCard.layerIdx + 1, currCard.rowIdx, currCard.colIdx);
+          var c2Removed = removed(currCard.layerIdx + 1, currCard.rowIdx, currCard.colIdx + 1);
+          var c3Removed = removed(currCard.layerIdx + 1, currCard.rowIdx + 1, currCard.colIdx);
+          var c4Removed = removed(currCard.layerIdx + 1, currCard.rowIdx + 1, currCard.colIdx + 1);
+          if (c1Removed && c2Removed && c3Removed && c4Removed) {
+            currCard.dark = false;
+            that.cardInMatrix(currCard.layerIdx, currCard.rowIdx, currCard.colIdx, currCard);
+          }
+        };
+        needCheckCards.forEach(function (cardNeedCheck) {
+          cardNeedCheck && check(cardNeedCheck);
+        });
+      } else {
+        // 奇数层
+        var _needCheckCards = [{
+          // 上一层相邻的4张牌
+          layerIdx: card.layerIdx - 1,
+          rowIdx: card.rowIdx,
+          colIdx: card.colIdx
+        }, {
+          layerIdx: card.layerIdx - 1,
+          rowIdx: card.rowIdx + 1,
+          colIdx: card.colIdx
+        }, {
+          layerIdx: card.layerIdx - 1,
+          rowIdx: card.rowIdx,
+          colIdx: card.colIdx + 1
+        }, {
+          layerIdx: card.layerIdx - 1,
+          rowIdx: card.rowIdx + 1,
+          colIdx: card.colIdx + 1
+        }].map(function (pos) {
+          var currCard = that.cardInMatrix(pos.layerIdx, pos.rowIdx, pos.colIdx);
+          return currCard;
+        });
+        var _check = function _check(currCard) {
+          var c1Removed = removed(currCard.layerIdx + 1, currCard.rowIdx - 1, currCard.colIdx - 1);
+          var c2Removed = removed(currCard.layerIdx + 1, currCard.rowIdx - 1, currCard.colIdx);
+          var c3Removed = removed(currCard.layerIdx + 1, currCard.rowIdx, currCard.colIdx - 1);
+          var c4Removed = removed(currCard.layerIdx + 1, currCard.rowIdx, currCard.colIdx);
+          if (c1Removed && c2Removed && c3Removed && c4Removed) {
+            currCard.dark = false;
+            that.cardInMatrix(currCard.layerIdx, currCard.rowIdx, currCard.colIdx, currCard);
+          }
+        };
+        _needCheckCards.forEach(function (cardNeedCheck) {
+          cardNeedCheck && _check(cardNeedCheck);
+        });
+      }
+    },
+    cardClicked: function cardClicked(card) {
+      if (card.dark) {
+        // 黑牌不能点击
+        return false;
+      }
+      if (this.xipaiFlag) {
+        return false;
+      }
+      if (this.pauseTimeStart !== 0) {
+        return false;
+      }
+      if (this.show.gameover) {
+        return false;
+      }
+      var that = this;
+      var cardInBarBeforePush = that.bar.find(function (cib) {
+        return cib.id === card.id;
+      });
+      if (cardInBarBeforePush) {
+        // 已经在bar中的不能点击
+        return false;
+      }
+      if (that.bar.length === BAR_LENGTH) {
+        return false;
+      }
+      that.audioOn && that.audio.sua.play();
+      that.bar.push(card);
+      that.bar.sort(function (a, b) {
+        return a.type - b.type;
+      });
+      that.uncover(card);
+      var destoryQueue = [];
+      var grouped = [];
+      var _iterator = _createForOfIteratorHelper(that.bar),
+        _step;
+      try {
+        for (_iterator.s(); !(_step = _iterator.n()).done;) {
+          var cardInBar = _step.value;
+          if (!grouped[cardInBar.type]) {
+            grouped[cardInBar.type] = [];
+          }
+          grouped[cardInBar.type].push(cardInBar);
+        }
+      } catch (err) {
+        _iterator.e(err);
+      } finally {
+        _iterator.f();
+      }
+      for (var key in grouped) {
+        var cardGroup = grouped[key];
+        if (cardGroup.length >= 3) {
+          for (var destoryIdx = 0; destoryIdx < 3; destoryIdx++) {
+            destoryQueue.push(cardGroup[destoryIdx]);
+          }
+          that.gameTime += 5;
+          setTimeout(function () {
+            that.score += 1;
+            destoryQueue.forEach(function (cardInGroup) {
+              cardInGroup.destory = true;
+              that.cardInMatrix(cardInGroup.layerIdx, cardInGroup.rowIdx, cardInGroup.colIdx, cardInGroup);
+              that.deleteCardInBar(cardInGroup.id);
+            });
+          }, 1000);
+        }
+      }
+      var barItemCnt = 0;
+      that.bar.forEach(function (cardInBar) {
+        var needDestory = destoryQueue.find(function (cardInDestory) {
+          return cardInBar.id === cardInDestory.id;
+        });
+        if (!needDestory) {
+          barItemCnt++;
+        }
+      });
+      if (barItemCnt > BAR_LENGTH - 1) {
+        that.gameover();
+      }
+    },
+    pauseClicked: function pauseClicked() {
+      if (this.pauseTimeStart === 0) {
+        if (this.pauseLeft <= 0) {
+          return false;
+        }
+        this.pauseLeft -= 1;
+        this.pauseTimeStart = Date.now();
+      } else {
+        this.pauseTime += (Date.now() - this.pauseTimeStart) / 1000;
+        this.pauseTimeStart = 0;
+      }
+    },
+    deleteCardInBar: function deleteCardInBar(cardId) {
+      var newBar = [];
+      for (var idx = 0; idx < this.bar.length; idx++) {
+        var cardInBar = this.bar[idx];
+        if (cardInBar && cardInBar.id !== cardId) {
+          newBar.push(cardInBar);
+        }
+      }
+      this.bar = newBar;
+    },
+    getCardPositionInBar: function getCardPositionInBar(cardId) {
+      var bar = this.bar,
+        height = this.height,
+        cardWidth = this.cardWidth,
+        barMarginLeft = this.barMarginLeft;
+      var left = 0;
+      for (var idx = 0; idx < bar.length; idx++) {
+        if (bar[idx].id === cardId) {
+          left = Math.floor(idx * cardWidth + barMarginLeft);
+          break;
+        }
+      }
+      return {
+        top: Math.floor(height * 0.9),
+        left: left
+      };
+    },
     cardStyle: function cardStyle(card) {
+      var cardInBar = this.bar.find(function (cardInBar) {
+        return cardInBar && cardInBar.id === card.id;
+      });
+      if (cardInBar) {
+        // 已经加入bar，用bar中的位置
+        var pos = this.getCardPositionInBar(card.id);
+        var style = {
+          top: "".concat(pos.top, "rpx"),
+          left: "".concat(pos.left, "rpx"),
+          'z-index': 100000 + card.layerIdx
+        };
+        return style;
+      }
       var width = this.width,
         height = this.height,
         cardWidth = this.cardWidth,
@@ -354,54 +704,81 @@ var _default = {
       setTimeout(function () {
         that.xipaiFlag = false;
         var cards = that.cards;
-        var _iterator = _createForOfIteratorHelper(cards),
-          _step;
+        var _iterator2 = _createForOfIteratorHelper(cards),
+          _step2;
         try {
-          for (_iterator.s(); !(_step = _iterator.n()).done;) {
-            var layer = _step.value;
-            var _iterator2 = _createForOfIteratorHelper(layer),
-              _step2;
+          for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
+            var layer = _step2.value;
+            var _iterator3 = _createForOfIteratorHelper(layer),
+              _step3;
             try {
-              for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
-                var row = _step2.value;
-                var _iterator3 = _createForOfIteratorHelper(row),
-                  _step3;
+              for (_iterator3.s(); !(_step3 = _iterator3.n()).done;) {
+                var row = _step3.value;
+                var _iterator4 = _createForOfIteratorHelper(row),
+                  _step4;
                 try {
                   var _loop = function _loop() {
-                    var card = _step3.value;
+                    var card = _step4.value;
                     var cardInBar = that.bar.find(function (cardInBar) {
                       return cardInBar && cardInBar.id === card.id;
                     });
                     if (!cardInBar && !card.destory) {
                       // 已经加入bar，用bar中的位置, 只能变换不在bar中的card
-                      card.type = Math.floor(Math.random() * that.images.length);
+                      card.type = Math.floor(Math.random() * CARD_TYPE);
                     }
                   };
-                  for (_iterator3.s(); !(_step3 = _iterator3.n()).done;) {
+                  for (_iterator4.s(); !(_step4 = _iterator4.n()).done;) {
                     _loop();
                   }
                 } catch (err) {
-                  _iterator3.e(err);
+                  _iterator4.e(err);
                 } finally {
-                  _iterator3.f();
+                  _iterator4.f();
                 }
               }
             } catch (err) {
-              _iterator2.e(err);
+              _iterator3.e(err);
             } finally {
-              _iterator2.f();
+              _iterator3.f();
             }
           }
         } catch (err) {
-          _iterator.e(err);
+          _iterator2.e(err);
         } finally {
-          _iterator.f();
+          _iterator2.f();
         }
       }, 1000);
+    },
+    gameover: function gameover() {
+      var that = this;
+      // that.$refs.audioBgmRef.pause()
+      // that.audioOn && that.$refs.audioFailedRef.play()
+      that.show.gameover = true;
+    },
+    startGame: function startGame() {
+      this.show.welcome = false;
+      this.newGame();
+    },
+    restartGame: function restartGame() {
+      this.newGame();
+    },
+    newGame: function newGame() {
+      var that = this;
+      var columnCount = that.columnCount;
+      that.cards = createCardsData(2, 7, columnCount, 6);
+      that.gameStartTime = Date.now();
+      that.gameTime = 1000;
+      that.pauseTime = 0;
+      that.pauseTimeStart = 0;
+      that.show.gameover = false;
+      that.bar = [];
+      that.score = 0;
+      // that.audioOn && that.$refs.audioBgmRef.play()
     }
   }
 };
 exports.default = _default;
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
 
 /***/ }),
 

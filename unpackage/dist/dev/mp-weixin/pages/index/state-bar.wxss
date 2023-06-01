@@ -1,0 +1,31 @@
+
+.hidden.state-bar-main.data-v-13dd3f71 {
+	top: 0rpx - var(--card-height);
+}
+.state-bar-main.data-v-13dd3f71 {
+  padding: calc(var(--height) / 100);
+  position: absolute;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-between;
+  top: 0;
+  left: 0;
+  width: var(--width);
+  height: var(--card-height);
+  box-sizing: border-box;
+  transition: all 1s;
+}
+.state-item>.label.data-v-13dd3f71 {
+  font-size: calc(var(--card-width) / 5);
+  display: block;
+  color: white;
+}
+.time-remain.data-v-13dd3f71 {
+  color: white;
+  font-size: calc(var(--card-width) * .7);
+}
+.score.data-v-13dd3f71 {
+  color: white;
+  font-size: calc(var(--card-width) * .7);
+}
+
