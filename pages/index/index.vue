@@ -674,15 +674,17 @@
 				} = that
 
 
-				that.cards = createCardsData(2, 7, columnCount, 6)
-				that.gameStartTime = Date.now()
+				that.cards = createCardsData(2, 7, columnCount, 6);
+				that.gameStartTime = Date.now();
+				that.pauseLeft = 3;
+				that.xipaiLeft = 3;
 				that.gameTime = 100;
 				that.pauseTime = 0;
 				that.pauseTimeStart = 0;
-				that.show.gameover = false
-				that.bar = []
-				that.score = 0
-				that.audioOn && that.audio.bgm.play()
+				that.show.gameover = false;
+				that.bar = [];
+				that.score = 0;
+				that.audioOn && that.audio.bgm.play();
 			}
 		}
 	}
