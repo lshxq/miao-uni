@@ -1,6 +1,6 @@
 {
   "navigationBarTitleText": "uni-app",
   "usingComponents": {
-    "state-bar": "/pages/index/state-bar"
+    "state-bar": "./state-bar"
   }
 }

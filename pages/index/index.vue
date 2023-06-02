@@ -3,8 +3,12 @@
 		<template v-if='cards' v-for="(layer,layerIdx) in cards">
 			<template v-for="(row,rowIdx) in layer">
 				<template v-for="(card, cardIdx) in row">
-					<view v-if='card && !card.destory' class="card-item" :class='{dark: card.dark || pauseTimeStart !== 0}' :style="[cardStyle(card)]" ref="mainPanelRef"
-						@click="cardClicked(card)">
+					<view v-if='card && !card.destory' 
+					      class="card-item" 
+						  :class='{dark: card.dark || pauseTimeStart !== 0}' 
+						  :style="[cardStyle(card)]" 
+						  @click.prevent.stop="cardClicked(card)"
+						  :key='card.id'>
 						<image v-if='card.type === 0' src="../../static/0.png" />
 						<image v-if='card.type === 1' src="../../static/1.png" />
 						<image v-if='card.type === 2' src="../../static/2.png" />
@@ -15,6 +19,7 @@
 						<image v-if='card.type === 7' src="../../static/7.png" />
 						<image v-if='card.type === 8' src="../../static/8.png" />
 						<image v-if='card.type === 9' src="../../static/9.png" />
+						<image v-if='card.type === 10' src="../../static/10.png" />
 					</view>
 				</template>
 			</template>
@@ -26,9 +31,8 @@
 		</view>
 
 		<view class="zhanting control-btn" @click="pauseClicked">
-			{{pauseTimeStart === 0 ? "暂停" : "继续"}}
-			<view class="corner">{{pauseLeft}}
-			</view>
+			<text>{{pauseTimeStart === 0 ? "暂停" : "继续"}}</text>
+			<view class="corner">{{pauseLeft}}</view>
 		</view>
 		
 		<view class="speaker-btn" @click='audioOn = !audioOn'>
@@ -66,10 +70,11 @@
 	import StateBar from './state-bar.vue'
 
 	const BAR_LENGTH = 8;
-	const CARD_TYPE = 9
+	const CARD_TYPE = 11
 
+	let id = 1;
 	const createCardsData = (layerCnt, rowCnt, columnCnt, typeCnt) => {
-		let id = 1;
+		
 
 		const data = [];
 		for (let layerIdx = 0; layerIdx < layerCnt; layerIdx++) {
@@ -279,15 +284,16 @@
 			}
 
 			that.audio = {
-				bgm: createAudio("../../static/bgm.mp3", true),
-				failed: createAudio("../../static/failed.mp3"),
-				sua: createAudio("../../static/sua.mp3"),
-				du: createAudio("../../static/du.mp3"),
+				bgm: createAudio("https://img.tukuppt.com/newpreview_music/09/02/07/5c8a31e2c9f0298727.mp3", true),
+				failed: createAudio("https://img.tukuppt.com/newpreview_music/09/00/25/5c89106c1b91b30143.mp3"),
+				sua: createAudio("https://img.tukuppt.com/newpreview_music/09/00/62/5c893bcaf3c9980553.mp3"),
+				du: createAudio("https://img.tukuppt.com/newpreview_music/09/04/04/5c8afef35a2001596.mp3"),
 			}
 
 		},
 		onUnload() {
 			clearTimeout(this.timerId)
+			this.show.welcome = true
 		},
 		methods: {
 			cardInMatrix(layerIdx, rowIdx, colIdx, newValue) {
@@ -435,6 +441,21 @@
 				if (that.bar.length === BAR_LENGTH) {
 					return false
 				}
+				/*
+				if (card.layerIdx === 1) { // 点击到了倒数第2层，数据扩充
+					const newCards = [...createCardsData(2, 7, this.columnCount, CARD_TYPE), ...JSON.parse(JSON.stringify(this.cards))];
+					for (let layerIdx=0; layerIdx<newCards.length; layerIdx++) {
+						const layer = newCards[layerIdx]
+						for (const row of layer) {
+							for(const card of row) {
+								card.layerIdx = layerIdx
+							}
+						}
+					}
+					this.cards = newCards
+					console.log(this.cards)
+				}
+				*/
 
 				that.audioOn && that.audio.sua.play();
 
@@ -674,7 +695,7 @@
 				} = that
 
 
-				that.cards = createCardsData(2, 7, columnCount, 6);
+				that.cards = createCardsData(8, 7, columnCount, CARD_TYPE);
 				that.gameStartTime = Date.now();
 				that.pauseLeft = 3;
 				that.xipaiLeft = 3;
@@ -716,7 +737,7 @@
 		position: absolute;
 		width: var(--card-width);
 		height: var(--card-height);
-		border: 1rpx solid red;
+		border: 1rpx solid lightgray;
 		transition: all 1s;
 
 	}

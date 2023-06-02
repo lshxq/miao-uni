@@ -1,8 +1,8 @@
 
-.hidden.state-bar-main.data-v-13dd3f71 {
+.hidden.state-bar-main.data-v-44485c5a {
 	top: 0rpx - var(--card-height);
 }
-.state-bar-main.data-v-13dd3f71 {
+.state-bar-main.data-v-44485c5a {
   padding: calc(var(--height) / 100);
   position: absolute;
   display: flex;
@@ -15,17 +15,16 @@
   box-sizing: border-box;
   transition: all 1s;
 }
-.state-item>.label.data-v-13dd3f71 {
+.state-item>.label.data-v-44485c5a {
   font-size: calc(var(--card-width) / 5);
   display: block;
   color: white;
 }
-.time-remain.data-v-13dd3f71 {
+.time-remain.data-v-44485c5a {
   color: white;
   font-size: calc(var(--card-width) * .7);
 }
-.score.data-v-13dd3f71 {
+.score.data-v-44485c5a {
   color: white;
   font-size: calc(var(--card-width) * .7);
 }
-
