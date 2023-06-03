@@ -14,5 +14,5 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
     c: $props.hidden ? 1 : ""
   };
 }
-const Component = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render], ["__scopeId", "data-v-44485c5a"], ["__file", "C:/Users/uu/Documents/HBuilderProjects/miao/pages/index/state-bar.vue"]]);
+const Component = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render], ["__scopeId", "data-v-44485c5a"], ["__file", "D:/tian/workspace/HBuilderProjects/miao/pages/index/state-bar.vue"]]);
 wx.createComponent(Component);

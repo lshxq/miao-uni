@@ -46,14 +46,15 @@
 			<view class="game-name" v-for="(item, idx) of gameNameDisplay" :key="idx" :style="[item.style]">
 				{{item.char}}
 			</view>
-			<view class="start-button" @click="startGame">开始游戏</view>
+			<view class="start-button button" @click="startGame">开始游戏</view>
+			<view class="setting-button button" @click="startGame">设置</view>
 		</view>
 
 
 
 		<div class="game-over-mask">
 			<div class="text">游戏结束</div>
-			<div class="start-button" @click="restartGame">重新开始</div>
+			<div class="restart-button  button" @click="restartGame">重新开始</div>
 		</div>
 
 		<div class="bar"></div>
@@ -149,6 +150,9 @@
 				} else {
 					rv = gameTime - (pauseTimeStart - gameStartTime) / 1000 + pauseTime
 				}
+				if (rv < 0) {
+					rv = 0
+				}
 				return Math.floor(rv)
 			},
 
@@ -217,16 +221,16 @@
 				return 1334;
 			},
 			cardHeight() {
-				const {
-					height
-				} = this
-				return Math.floor(height / 10);
+				// const {
+				// 	height
+				// } = this
+				return 130;
 			},
 			cardWidth() {
 				const {
-					width
+					cardHeight
 				} = this
-				return Math.floor(width / 9)
+				return cardHeight * .6
 			},
 			columnCount() {
 				const {
@@ -267,6 +271,10 @@
 			}
 		},
 		onLoad() {
+			setTimeout(() => {
+				console.log(getApp().globalData)
+			}, 5000)
+			
 			const that = this
 			that.timerId = setInterval(() => {
 				if (that.show.gameover || that.show.welcome) {
@@ -715,8 +723,8 @@
 	.main-panel {
 		--width: 750rpx;
 		--height: 1334rpx;
-		--card-height: calc(var(--height) / 10 - 10rpx);
-		--card-width: calc(var(--width) / 9);
+		--card-height: 130rpx;
+		--card-width: calc(var(--card-height) * 0.6);
 		--bar-length: 8;
 		--bar-left: calc((var(--width) - var(--card-width) * var(--bar-length)) / 2);
 		--bar-top: calc(var(--height) * 0.9);
@@ -892,8 +900,13 @@
 		width: 100%;
 		height: 100%;
 	}
-	.start-button {
-		padding: 15rpx 20rpx;
+	.button {
+		margin-top: 30rpx;
+		min-width: 200rpx;
+		height: 70rpx;
+		display: flex;
+		justify-content: center;
+		align-items: center;
 		border-radius: 15rpx;
 		color: white;
 		background: linear-gradient(hsl(240, 100%, 64%), hsl(210, 100%, 64%), hsl(240, 100%, 64%));

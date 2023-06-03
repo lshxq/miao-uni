@@ -69,6 +69,9 @@ const _sfc_main = {
       } else {
         rv = gameTime - (pauseTimeStart - gameStartTime) / 1e3 + pauseTime;
       }
+      if (rv < 0) {
+        rv = 0;
+      }
       return Math.floor(rv);
     },
     gameNameDisplay() {
@@ -132,16 +135,13 @@ const _sfc_main = {
       return 1334;
     },
     cardHeight() {
-      const {
-        height
-      } = this;
-      return Math.floor(height / 10);
+      return 130;
     },
     cardWidth() {
       const {
-        width
+        cardHeight
       } = this;
-      return Math.floor(width / 9);
+      return cardHeight * 0.6;
     },
     columnCount() {
       const {
@@ -182,6 +182,9 @@ const _sfc_main = {
     }
   },
   onLoad() {
+    setTimeout(() => {
+      console.log(getApp().globalData);
+    }, 5e3);
     const that = this;
     that.timerId = setInterval(() => {
       if (that.show.gameover || that.show.welcome) {
@@ -625,9 +628,10 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
       };
     }),
     l: common_vendor.o((...args) => $options.startGame && $options.startGame(...args)),
-    m: common_vendor.o((...args) => $options.restartGame && $options.restartGame(...args)),
-    n: common_vendor.n($options.mainPanelClass)
+    m: common_vendor.o((...args) => $options.startGame && $options.startGame(...args)),
+    n: common_vendor.o((...args) => $options.restartGame && $options.restartGame(...args)),
+    o: common_vendor.n($options.mainPanelClass)
   });
 }
-const MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render], ["__file", "C:/Users/uu/Documents/HBuilderProjects/miao/pages/index/index.vue"]]);
+const MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render], ["__file", "D:/tian/workspace/HBuilderProjects/miao/pages/index/index.vue"]]);
 wx.createPage(MiniProgramPage);

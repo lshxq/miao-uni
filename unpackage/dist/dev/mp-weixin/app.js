@@ -5,17 +5,38 @@ if (!Math) {
   "./pages/index/index.js";
 }
 const _sfc_main = {
+  globalData: {
+    loginResp: false,
+    userInfoResp: false
+  },
   onLaunch: function() {
-    console.log("App Launch");
+    common_vendor.wx$1.login({
+      success(loginResp) {
+        getApp().globalData.loginResp = loginResp;
+        common_vendor.wx$1.getUserInfo({
+          success(userInfoResp) {
+            getApp().globalData.userInfoResp = userInfoResp;
+          }
+        });
+      },
+      fail(err) {
+        console.error("login failed", err);
+      }
+    });
   },
   onShow: function() {
-    console.log("App Show");
   },
   onHide: function() {
-    console.log("App Hide");
   }
 };
-const App = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["__file", "C:/Users/uu/Documents/HBuilderProjects/miao/App.vue"]]);
+if (!Array) {
+  const _component_router_view = common_vendor.resolveComponent("router-view");
+  _component_router_view();
+}
+function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
+  return {};
+}
+const App = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render], ["__file", "D:/tian/workspace/HBuilderProjects/miao/App.vue"]]);
 function createApp() {
   const app = common_vendor.createSSRApp(App);
   return {
