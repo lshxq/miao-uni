@@ -1,6 +1,7 @@
 {
   "navigationBarTitleText": "天天找猫",
   "usingComponents": {
-    "state-bar": "./state-bar"
+    "state-bar": "./state-bar",
+    "switch-btn": "./switch-btn"
   }
 }

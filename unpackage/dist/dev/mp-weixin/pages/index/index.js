@@ -1,6 +1,7 @@
 "use strict";
 const common_vendor = require("../../common/vendor.js");
 const StateBar = () => "./state-bar.js";
+const SwitchBtn = () => "./switch-btn.js";
 const BAR_LENGTH = 8;
 const CARD_TYPE = 11;
 let id = 1;
@@ -31,7 +32,8 @@ const _sfc_main = {
   created() {
   },
   components: {
-    StateBar
+    StateBar,
+    SwitchBtn
   },
   data() {
     return {
@@ -45,6 +47,7 @@ const _sfc_main = {
       bar: [],
       score: 0,
       audioOn: true,
+      bgmOn: true,
       xipaiFlag: false,
       xipaiLeft: 3,
       pauseLeft: 3,
@@ -165,10 +168,12 @@ const _sfc_main = {
   },
   watch: {
     audioOn(value) {
-      if (value) {
-        this.audio.bgm.play();
-      } else {
-        this.audio.bgm.pause();
+      if (this.bgmOn) {
+        if (value) {
+          this.audio.bgm.play();
+        } else {
+          this.audio.bgm.pause();
+        }
       }
     },
     timeRemain(remain) {
@@ -216,6 +221,9 @@ const _sfc_main = {
     this.show.welcome = true;
   },
   methods: {
+    audioSwitch(value) {
+      this.audioOn = value;
+    },
     cardInMatrix(layerIdx, rowIdx, colIdx, newValue) {
       const cards = JSON.parse(JSON.stringify(this.cards));
       const layer = cards[layerIdx];
@@ -560,13 +568,14 @@ const _sfc_main = {
       that.show.gameover = false;
       that.bar = [];
       that.score = 0;
-      that.audioOn && that.audio.bgm.play();
+      that.audioOn && that.bgmOn && that.audio.bgm.play();
     }
   }
 };
 if (!Array) {
   const _component_state_bar = common_vendor.resolveComponent("state-bar");
-  _component_state_bar();
+  const _component_switch_btn = common_vendor.resolveComponent("switch-btn");
+  (_component_state_bar + _component_switch_btn)();
 }
 function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   return common_vendor.e({
@@ -626,17 +635,25 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
       score: $data.score,
       hidden: $data.show.welcome
     }),
-    k: common_vendor.f($options.gameNameDisplay, (item, idx, i0) => {
+    k: common_vendor.o($options.audioSwitch),
+    l: common_vendor.p({
+      value: $data.audioOn
+    }),
+    m: common_vendor.o((value) => $data.bgmOn = value),
+    n: common_vendor.p({
+      value: $data.bgmOn
+    }),
+    o: common_vendor.f($options.gameNameDisplay, (item, idx, i0) => {
       return {
         a: common_vendor.t(item.char),
         b: idx,
         c: common_vendor.s(item.style)
       };
     }),
-    l: common_vendor.o((...args) => $options.startGame && $options.startGame(...args)),
-    m: common_vendor.o(($event) => $data.show.setting = !$data.show.setting),
-    n: common_vendor.o((...args) => $options.restartGame && $options.restartGame(...args)),
-    o: common_vendor.n($options.mainPanelClass)
+    p: common_vendor.o((...args) => $options.startGame && $options.startGame(...args)),
+    q: common_vendor.o(($event) => $data.show.setting = !$data.show.setting),
+    r: common_vendor.o((...args) => $options.restartGame && $options.restartGame(...args)),
+    s: common_vendor.n($options.mainPanelClass)
   });
 }
 const MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render], ["__file", "D:/tian/workspace/HBuilderProjects/miao/pages/index/index.vue"]]);
