@@ -42,17 +42,21 @@
 
 		<state-bar :time-remain="timeRemain" :score="score" :hidden='show.welcome' />
 
-		<view class="welcome">
+		<div class="setting-panel  mask">
+			<image src='../../static/setting.webp' width="100%" height='100%'/>
+		</div>
+
+		<view class="welcome  mask">
 			<view class="game-name" v-for="(item, idx) of gameNameDisplay" :key="idx" :style="[item.style]">
 				{{item.char}}
 			</view>
 			<view class="start-button button" @click="startGame">开始游戏</view>
-			<view class="setting-button button" @click="startGame">设置</view>
+			<view class="setting-button button" @click="show.setting = !show.setting">设置</view>
 		</view>
 
 
 
-		<div class="game-over-mask">
+		<div class="game-over-mask mask">
 			<div class="text">游戏结束</div>
 			<div class="restart-button  button" @click="restartGame">重新开始</div>
 		</div>
@@ -130,7 +134,8 @@
 
 				show: {
 					welcome: true,
-					gameover: false
+					gameover: false,
+					setting: false
 				}
 			}
 		},
@@ -194,7 +199,8 @@
 			mainPanelClass() {
 				const {
 					welcome,
-					gameover
+					gameover,
+					setting
 				} = this.show
 				const classes = []
 				if (welcome) {
@@ -203,7 +209,9 @@
 				if (gameover) {
 					classes.push('show-game-over')
 				}
-
+				if (setting) {
+					classes.push('show-setting')
+				}
 				return classes
 			},
 			cardMarginLeft() {
@@ -702,7 +710,7 @@
 					columnCount
 				} = that
 
-
+				that.show.setting = false
 				that.cards = createCardsData(8, 7, columnCount, CARD_TYPE);
 				that.gameStartTime = Date.now();
 				that.pauseLeft = 3;
@@ -817,13 +825,35 @@
 		background: white;
 		filter: blur(20rpx);
 	}
+	
+	.setting-panel {
+		top: calc(0rpx - 100vh);
+		
+		background-color: red;
+		z-index: calc(var(--welcome-z) + 1);
+		background-size: 100% 100%;
+		transition: all 1s;
+	}
+	
+	.setting-panel image {
+		width: 100%;
+	}
+	
+		
+	.show-setting .setting-panel {
+		top: 0rpx;
+		height: 500rpx;
+	}
+	
+	 .mask {
+		 position: absolute;
+		 height: 100vh;
+		 width: 100vw;
+	 }
 
 	.welcome {
-		top: -120%;
-		position: relative;
-		height: 100%;
-		width: 100%;
-
+		top: calc(0rpx - 100vh);
+		
 		z-index: var(--welcome-z);
 		background: url(../../static/miao-bg.webp) no-repeat;
 		background-size: 100% 100%;
@@ -844,7 +874,7 @@
 	}
 
 	.show-welcome .welcome {
-		top: 0;
+		top: 0rpx;
 	}
 
 	.water-mark {
@@ -860,10 +890,7 @@
 	  --light-transparent: rgba(200, 200, 200, .6);
 	  --dark-transparent: rgba(100, 100, 100, .8);
 	  
-	  top: -0rpx;
-	  position: relative;
-	  height: 100%;
-	  width: 100%;
+	  top: calc(0rpx - 100vh);
 	  
 	  z-index: var(--game-over-z);
 	  background: linear-gradient(var(--light-transparent) 5%, var(--dark-transparent) 50%, var(--light-transparent) 100%);
@@ -876,7 +903,7 @@
 	}
 
 	.show-game-over .game-over-mask {
-		top: -100%;
+		top: 0rpx;
 	}
 
 	.game-over-mask>.text {

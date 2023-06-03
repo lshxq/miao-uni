@@ -50,7 +50,8 @@ const _sfc_main = {
       pauseLeft: 3,
       show: {
         welcome: true,
-        gameover: false
+        gameover: false,
+        setting: false
       }
     };
   },
@@ -109,7 +110,8 @@ const _sfc_main = {
     mainPanelClass() {
       const {
         welcome,
-        gameover
+        gameover,
+        setting
       } = this.show;
       const classes = [];
       if (welcome) {
@@ -117,6 +119,9 @@ const _sfc_main = {
       }
       if (gameover) {
         classes.push("show-game-over");
+      }
+      if (setting) {
+        classes.push("show-setting");
       }
       return classes;
     },
@@ -544,6 +549,7 @@ const _sfc_main = {
       const {
         columnCount
       } = that;
+      that.show.setting = false;
       that.cards = createCardsData(8, 7, columnCount, CARD_TYPE);
       that.gameStartTime = Date.now();
       that.pauseLeft = 3;
@@ -628,7 +634,7 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
       };
     }),
     l: common_vendor.o((...args) => $options.startGame && $options.startGame(...args)),
-    m: common_vendor.o((...args) => $options.startGame && $options.startGame(...args)),
+    m: common_vendor.o(($event) => $data.show.setting = !$data.show.setting),
     n: common_vendor.o((...args) => $options.restartGame && $options.restartGame(...args)),
     o: common_vendor.n($options.mainPanelClass)
   });
