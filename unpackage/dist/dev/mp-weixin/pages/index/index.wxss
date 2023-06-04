@@ -154,13 +154,16 @@
 .show-game-over .game-over-mask {
 		top: 0rpx;
 }
-.game-over-mask>.text {
+.game-over-mask .contrast {
+}
+.game-over-mask .text {
 		top: -100%;
 		display: flex;
 		justify-content: center;
 		align-items: center;
-		font-size: var(--card-width);
-		color: white;
+		font-size: calc(var(--card-width) * 1.5);
+		font-weight: bolder;
+		color: hsl(100, 100%, 64%);
 }
 .speaker-btn {
 		position: absolute;
@@ -199,4 +202,27 @@
 .switch .input {
 		display: flex;
 		align-items: center;
+}
+.top10-panel {
+		color: white;
+}
+.top10-panel .row {
+		display: flex;
+}
+.top10-panel .row .index {
+		--user-width: 60rpx;
+		flex: 1 1 var(--user-width);
+		width: var(--user-width);
+}
+.top10-panel .row .user {
+		--user-width: 200rpx;
+		flex: 1 1 var(--user-width);
+		width: var(--user-width);
+}
+.top10-panel .row .score {
+		
+		display: flex;
+}
+.top10-panel .row .score:after {
+		content: '分'
 }

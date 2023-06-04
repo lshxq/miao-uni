@@ -37,6 +37,7 @@ const _sfc_main = {
   },
   data() {
     return {
+      top10: [{ "userId": "UU", "province": null, "city": null, "ip": "172.22.0.1", "score": 121, "updated": "2023-06-04T07:26:39.000+0000" }, { "userId": "zero", "province": null, "city": null, "ip": "172.22.0.1", "score": 121, "updated": "2023-06-04T07:32:20.000+0000" }, { "userId": "samba", "province": null, "city": null, "ip": "172.22.0.1", "score": 118, "updated": "2023-06-04T07:32:20.000+0000" }, { "userId": "Lukas", "province": null, "city": null, "ip": "172.22.0.1", "score": 110, "updated": "2023-06-04T07:32:20.000+0000" }, { "userId": "baba13", "province": null, "city": null, "ip": "172.22.0.1", "score": 98, "updated": "2023-06-04T07:32:21.000+0000" }, { "userId": "firebug", "province": null, "city": null, "ip": "172.22.0.1", "score": 98, "updated": "2023-06-04T07:32:20.000+0000" }, { "userId": "TSY", "province": null, "city": null, "ip": "172.22.0.1", "score": 97, "updated": "2023-06-04T07:32:20.000+0000" }, { "userId": "dero", "province": null, "city": null, "ip": "172.22.0.1", "score": 90, "updated": "2023-06-04T07:32:21.000+0000" }, { "userId": "CHEN", "province": null, "city": null, "ip": "172.22.0.1", "score": 89, "updated": "2023-06-04T07:32:20.000+0000" }, { "userId": "axiong", "province": null, "city": null, "ip": "172.22.0.1", "score": 89, "updated": "2023-06-04T07:32:21.000+0000" }],
       gameName: "喵了个咪",
       gameStartTime: 0,
       pauseTimeStart: 0,
@@ -652,8 +653,15 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
     }),
     p: common_vendor.o((...args) => $options.startGame && $options.startGame(...args)),
     q: common_vendor.o(($event) => $data.show.setting = !$data.show.setting),
-    r: common_vendor.o((...args) => $options.restartGame && $options.restartGame(...args)),
-    s: common_vendor.n($options.mainPanelClass)
+    r: common_vendor.f($data.top10, (row, idx, i0) => {
+      return {
+        a: common_vendor.t(idx + 1),
+        b: common_vendor.t(row.userId),
+        c: common_vendor.t(row.score)
+      };
+    }),
+    s: common_vendor.o((...args) => $options.restartGame && $options.restartGame(...args)),
+    t: common_vendor.n($options.mainPanelClass)
   });
 }
 const MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render], ["__file", "D:/tian/workspace/HBuilderProjects/miao/pages/index/index.vue"]]);

@@ -65,7 +65,16 @@
 
 
 		<div class="game-over-mask mask">
-			<div class="text">游戏结束</div>
+			<div class="contrast">
+				<div class="text">游戏结束</div>
+			</div>
+			<div class="top10-panel">
+				<div class="row" v-for='(row, idx) of top10'>
+					<div class="index">{{idx + 1}}</div>
+					<div class="user">{{row.userId}}</div>
+					<div class="score">{{row.score}}</div>
+				</div>
+			</div>
 			<div class="restart-button  button" @click="restartGame">重新开始</div>
 		</div>
 
@@ -123,6 +132,8 @@
 		},
 		data() {
 			return {
+				top10: [{"userId":"UU","province":null,"city":null,"ip":"172.22.0.1","score":121,"updated":"2023-06-04T07:26:39.000+0000"},{"userId":"zero","province":null,"city":null,"ip":"172.22.0.1","score":121,"updated":"2023-06-04T07:32:20.000+0000"},{"userId":"samba","province":null,"city":null,"ip":"172.22.0.1","score":118,"updated":"2023-06-04T07:32:20.000+0000"},{"userId":"Lukas","province":null,"city":null,"ip":"172.22.0.1","score":110,"updated":"2023-06-04T07:32:20.000+0000"},{"userId":"baba13","province":null,"city":null,"ip":"172.22.0.1","score":98,"updated":"2023-06-04T07:32:21.000+0000"},{"userId":"firebug","province":null,"city":null,"ip":"172.22.0.1","score":98,"updated":"2023-06-04T07:32:20.000+0000"},{"userId":"TSY","province":null,"city":null,"ip":"172.22.0.1","score":97,"updated":"2023-06-04T07:32:20.000+0000"},{"userId":"dero","province":null,"city":null,"ip":"172.22.0.1","score":90,"updated":"2023-06-04T07:32:21.000+0000"},{"userId":"CHEN","province":null,"city":null,"ip":"172.22.0.1","score":89,"updated":"2023-06-04T07:32:20.000+0000"},{"userId":"axiong","province":null,"city":null,"ip":"172.22.0.1","score":89,"updated":"2023-06-04T07:32:21.000+0000"}],
+				
 				gameName: '喵了个咪',
 
 				gameStartTime: 0,
@@ -922,13 +933,16 @@
 		top: 0rpx;
 	}
 
-	.game-over-mask>.text {
+	.game-over-mask .contrast {
+	}
+	.game-over-mask .text {
 		top: -100%;
 		display: flex;
 		justify-content: center;
 		align-items: center;
-		font-size: var(--card-width);
-		color: white;
+		font-size: calc(var(--card-width) * 1.5);
+		font-weight: bolder;
+		color: hsl(100, 100%, 64%);
 	}
 	
 	.speaker-btn {
@@ -969,5 +983,30 @@
 	.switch .input {
 		display: flex;
 		align-items: center;
+	}
+	
+	.top10-panel {
+		color: white;
+	}
+	.top10-panel .row {
+		display: flex;
+		
+	}
+	.top10-panel .row .index {
+		--user-width: 60rpx;
+		flex: 1 1 var(--user-width);
+		width: var(--user-width);
+	}
+	.top10-panel .row .user {
+		--user-width: 200rpx;
+		flex: 1 1 var(--user-width);
+		width: var(--user-width);
+	}
+	.top10-panel .row .score {
+		
+		display: flex;
+	}
+	.top10-panel .row .score:after {
+		content: '分'
 	}
 </style>
