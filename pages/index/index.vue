@@ -3,7 +3,7 @@
 		<template v-if='cards' v-for="(layer,layerIdx) in cards">
 			<template v-for="(row,rowIdx) in layer">
 				<template v-for="(card, cardIdx) in row">
-					<view v-if='card && !card.destory' 
+					<view v-if='card' 
 					      class="card-item" 
 						  :class='{dark: card.dark || pauseTimeStart !== 0}' 
 						  :style="[cardStyle(card)]" 
@@ -163,6 +163,22 @@
 		},
 		
 		computed: {
+			cardLeft() {
+				const {
+					cards
+				} = this
+				const arr = []
+				for(const layer of cards) {
+					for (const row of layer) {
+						for (const card of row) {
+							if (!card.destory) {
+								arr.push(card)
+							}
+						}
+					}
+				}
+				return arr
+			},
 			timeRemain() {
 				const {
 					gameStartTime,
@@ -534,9 +550,36 @@
 								that.deleteCardInBar(cardInGroup.id)
 
 							})
+							
+							let fapai = true
+							const cardTypeMap = {}
+							for(const card of this.cardLeft) {
+								if (cardTypeMap[card.type]) {
+									cardTypeMap[card.type] = cardTypeMap[card.type] + 1
+								} else {
+									cardTypeMap[card.type] = 1
+								}
+								if(cardTypeMap[card.type] >= 3) {
+									fapai = false
+								}
+							}
+							if (fapai) {
+								this.bar = []
+								for (const layer of this.cards) {
+									for (const row of layer) {
+										for (const cc of row) {
+											cc.type = Math.floor(Math.random() * CARD_TYPE)
+											cc.destory = false
+										}
+									}
+								}
+							}
 						}, 1000)
 					}
 				}
+				
+				
+				
 
 				let barItemCnt = 0
 				that.bar.forEach(cardInBar => {
@@ -597,6 +640,14 @@
 				}
 			},
 			cardStyle(card) {
+				
+				if (card.destory) {
+					return {
+						opacity: 0,
+						top: `0rpx`,
+						left: '300rpx'
+					}
+				}
 				
 				const cardInBar = this.bar.find(cardInBar => {
 					return cardInBar && cardInBar.id === card.id
@@ -739,7 +790,7 @@
 				} = that
 
 				that.show.setting = false
-				that.cards = createCardsData(8, 7, columnCount, CARD_TYPE);
+				that.cards = createCardsData(2, 7, columnCount, CARD_TYPE);
 				that.gameStartTime = Date.now();
 				that.pauseLeft = 3;
 				that.xipaiLeft = 3;

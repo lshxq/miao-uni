@@ -60,6 +60,22 @@ const _sfc_main = {
     };
   },
   computed: {
+    cardLeft() {
+      const {
+        cards
+      } = this;
+      const arr = [];
+      for (const layer of cards) {
+        for (const row of layer) {
+          for (const card of row) {
+            if (!card.destory) {
+              arr.push(card);
+            }
+          }
+        }
+      }
+      return arr;
+    },
     timeRemain() {
       const {
         gameStartTime,
@@ -381,6 +397,28 @@ const _sfc_main = {
               that.cardInMatrix(cardInGroup.layerIdx, cardInGroup.rowIdx, cardInGroup.colIdx, cardInGroup);
               that.deleteCardInBar(cardInGroup.id);
             });
+            let fapai = true;
+            const cardTypeMap = {};
+            for (const card2 of this.cardLeft) {
+              if (cardTypeMap[card2.type]) {
+                cardTypeMap[card2.type] = cardTypeMap[card2.type] + 1;
+              } else {
+                cardTypeMap[card2.type] = 1;
+              }
+              if (cardTypeMap[card2.type] >= 3) {
+                fapai = false;
+              }
+            }
+            if (fapai) {
+              for (const layer of this.cards) {
+                for (const row of layer) {
+                  for (const cc of row) {
+                    cc.type = Math.floor(Math.random() * CARD_TYPE);
+                    cc.destory = false;
+                  }
+                }
+              }
+            }
           }, 1e3);
         }
       }
@@ -439,6 +477,13 @@ const _sfc_main = {
       };
     },
     cardStyle(card) {
+      if (card.destory) {
+        return {
+          opacity: 0,
+          top: `0rpx`,
+          left: "300rpx"
+        };
+      }
       const cardInBar = this.bar.find((cardInBar2) => {
         return cardInBar2 && cardInBar2.id === card.id;
       });
@@ -559,7 +604,7 @@ const _sfc_main = {
         columnCount
       } = that;
       that.show.setting = false;
-      that.cards = createCardsData(8, 7, columnCount, CARD_TYPE);
+      that.cards = createCardsData(2, 7, columnCount, CARD_TYPE);
       that.gameStartTime = Date.now();
       that.pauseLeft = 3;
       that.xipaiLeft = 3;
@@ -588,8 +633,8 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
           return {
             a: common_vendor.f(row, (card, cardIdx, i2) => {
               return common_vendor.e({
-                a: card && !card.destory
-              }, card && !card.destory ? common_vendor.e({
+                a: card
+              }, card ? common_vendor.e({
                 b: card.type === 0
               }, card.type === 0 ? {} : {}, {
                 c: card.type === 1
