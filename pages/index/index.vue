@@ -1,8 +1,8 @@
 <template>
 	<view class="main-panel" :class="mainPanelClass">
-		<template v-if='cards' v-for="(layer,layerIdx) in cards">
-			<template v-for="(row,rowIdx) in layer">
-				<template v-for="(card, cardIdx) in row">
+		<template v-if='cards' v-for="(layer,layerIdx) in cards" :key=layerIdx''>
+			<template v-for="(row,rowIdx) in layer" :key='rowIdx'>
+				<template v-for="(card, cardIdx) in row" :key='cardIdx'>
 					<view v-if='card' 
 					      class="card-item" 
 						  :class='{dark: card.dark || pauseTimeStart !== 0}' 
@@ -346,6 +346,16 @@
 				sua: createAudio("https://img.tukuppt.com/newpreview_music/09/00/62/5c893bcaf3c9980553.mp3"),
 				du: createAudio("https://img.tukuppt.com/newpreview_music/09/04/04/5c8afef35a2001596.mp3"),
 			}
+			
+			wx.request({
+				url: 'https://tsy.zone/miao-api/score/top10',
+				success(res) {
+					if (res && res.data && res.data.length > 0) {
+						that.top10 = res.data
+					}
+				},
+				
+			})
 
 		},
 		onUnload() {

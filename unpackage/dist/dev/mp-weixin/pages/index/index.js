@@ -232,6 +232,14 @@ const _sfc_main = {
       sua: createAudio("https://img.tukuppt.com/newpreview_music/09/00/62/5c893bcaf3c9980553.mp3"),
       du: createAudio("https://img.tukuppt.com/newpreview_music/09/04/04/5c8afef35a2001596.mp3")
     };
+    common_vendor.wx$1.request({
+      url: "https://tsy.zone/miao-api/score/top10",
+      success(res) {
+        if (res && res.data && res.data.length > 0) {
+          that.top10 = res.data;
+        }
+      }
+    });
   },
   onUnload() {
     clearTimeout(this.timerId);
@@ -410,6 +418,7 @@ const _sfc_main = {
               }
             }
             if (fapai) {
+              this.bar = [];
               for (const layer of this.cards) {
                 for (const row of layer) {
                   for (const cc of row) {
@@ -662,7 +671,8 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
                 o: common_vendor.o(($event) => $options.cardClicked(card), card.id),
                 p: card.id
               }) : {});
-            })
+            }),
+            b: rowIdx
           };
         })
       };

@@ -17,6 +17,7 @@
 					wx.getUserInfo({
 						success(userInfoResp) {
 							getApp().globalData.userInfoResp = userInfoResp
+							console.log(userInfoResp, 'user')
 						}
 					})
 				},
