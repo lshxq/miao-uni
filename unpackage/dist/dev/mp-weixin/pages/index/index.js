@@ -424,6 +424,7 @@ const _sfc_main = {
                   for (const cc of row) {
                     cc.type = Math.floor(Math.random() * CARD_TYPE);
                     cc.destory = false;
+                    cc.dark = this.cards.length - 1 !== cc.layerIdx;
                   }
                 }
               }
@@ -613,7 +614,7 @@ const _sfc_main = {
         columnCount
       } = that;
       that.show.setting = false;
-      that.cards = createCardsData(2, 7, columnCount, CARD_TYPE);
+      that.cards = createCardsData(4, 7, columnCount, CARD_TYPE);
       that.gameStartTime = Date.now();
       that.pauseLeft = 3;
       that.xipaiLeft = 3;
@@ -670,11 +671,14 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
                 n: common_vendor.s($options.cardStyle(card)),
                 o: common_vendor.o(($event) => $options.cardClicked(card), card.id),
                 p: card.id
-              }) : {});
+              }) : {}, {
+                q: cardIdx
+              });
             }),
             b: rowIdx
           };
-        })
+        }),
+        b: layerIdx
       };
     })
   } : {}, {

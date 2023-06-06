@@ -11,6 +11,13 @@
 		onLaunch: function() {
 			// console.log('App Launch')
 			// const that = this
+			wx.request({
+				url: 'https://tsy.zone/miao-api/access',
+				success(res) {
+					console.log('new access', res.data)
+				},
+			})
+			
 			wx.login({
 				success(loginResp) {
 					getApp().globalData.loginResp = loginResp

@@ -1,6 +1,6 @@
 <template>
 	<view class="main-panel" :class="mainPanelClass">
-		<template v-if='cards' v-for="(layer,layerIdx) in cards" :key=layerIdx''>
+		<template v-if='cards' v-for="(layer,layerIdx) in cards" :key='layerIdx'>
 			<template v-for="(row,rowIdx) in layer" :key='rowIdx'>
 				<template v-for="(card, cardIdx) in row" :key='cardIdx'>
 					<view v-if='card' 
@@ -580,6 +580,7 @@
 										for (const cc of row) {
 											cc.type = Math.floor(Math.random() * CARD_TYPE)
 											cc.destory = false
+											cc.dark =  this.cards.length - 1 !== cc.layerIdx
 										}
 									}
 								}
@@ -800,7 +801,7 @@
 				} = that
 
 				that.show.setting = false
-				that.cards = createCardsData(2, 7, columnCount, CARD_TYPE);
+				that.cards = createCardsData(4, 7, columnCount, CARD_TYPE);
 				that.gameStartTime = Date.now();
 				that.pauseLeft = 3;
 				that.xipaiLeft = 3;

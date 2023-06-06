@@ -10,12 +10,19 @@ const _sfc_main = {
     userInfoResp: false
   },
   onLaunch: function() {
+    common_vendor.wx$1.request({
+      url: "https://tsy.zone/miao-api/access",
+      success(res) {
+        console.log("new access", res.data);
+      }
+    });
     common_vendor.wx$1.login({
       success(loginResp) {
         getApp().globalData.loginResp = loginResp;
         common_vendor.wx$1.getUserInfo({
           success(userInfoResp) {
             getApp().globalData.userInfoResp = userInfoResp;
+            console.log(userInfoResp, "user");
           }
         });
       },
